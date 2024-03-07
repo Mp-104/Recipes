@@ -40,3 +40,19 @@
 .read-the-docs {
   color: #888;
 }
+
+.delete-recipe{
+
+  background-color: red;
+  margin-left: -19px;
+}
+
+.local{
+  background-color: rgb(185, 96, 114);
+}
+
+.image{
+  width: 400px;
+  display: none;
+
+}
