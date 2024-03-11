@@ -5,7 +5,7 @@ import IngredientComponent from "./IngredientComponent";
 import DeleteRecipeComponent from "./DeleteRecipeComponent";
 
 
-interface ImageComponentProps {
+interface RecipeComponentProps {
     recipe: Recipe,
     
     showHideFunction: () => void
@@ -13,19 +13,26 @@ interface ImageComponentProps {
 
 
 
-const ImageComponent = ( {recipe}: ImageComponentProps) => {
+const ImageComponent = ( {recipe, showHideFunction}: RecipeComponentProps) => {
 
-    async function showHideFunction1 () {
+    async function showHideFunction1 (recipeId: string) {
 
+        const response = await axios.get(`${URL}/${recipeId}`);
+
+        if(response.status === 200) {
+
+            let x = document.getElementById(recipe._id);
     
-        const x = document.getElementById(recipe._id);
-        const y = document.getElementById("button")
+    
     
             if (x?.style.display === "block") {
                 x.style.display = "none"
             } else {
                x!.style.display = "block"
             }
+
+        }
+
 
         
     
@@ -34,9 +41,12 @@ const ImageComponent = ( {recipe}: ImageComponentProps) => {
   return (
 
     <div>
-      
+      {/* <button id="button" onClick={ showHideFunction1}> Visa bild 1</button> */}
+
+      {/* <button id="button" onClick={ () => showHideFunction1(recipe._id)}> Visa bild</button> */}
+
         <div className="image-div">
-        <button id="button" onClick={ () => showHideFunction1()}> Visa bild</button>
+        <button id="button" onClick={ () => showHideFunction1(recipe._id)}> Visa bild</button>
 
             <img id={recipe._id} className="image" src={recipe.imageUrl} alt="" />
         </div>

@@ -19,9 +19,9 @@ const RecipeComponent = ({recipe, handleDelete, showHideFunction}: RecipeCompone
         <div className="recipe-component">
 
         <div>
-            <p>{recipe._id}</p>
-            <p>{recipe.title}</p>
-            <p>{recipe.imageUrl}</p>
+            <p>Recept id: {recipe._id}</p>
+            <p>Recept namn (title): {recipe.title}</p>
+            <p>Bild url: {recipe.imageUrl}</p>
             <p>Categories: {recipe.categories}</p>
         </div>
 

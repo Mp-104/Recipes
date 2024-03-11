@@ -7,6 +7,7 @@ import { Recipe, IngredientInterface } from './types'
 import RecipeComponent from './components/RecipeComponent'
 import IngredientComponent from './components/IngredientComponent'
 
+
 /* interface Recipe {
 
   title: string
@@ -22,6 +23,10 @@ function App() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [addRecipeName, setRecipeName] = useState("");
   const [addIngredientName, setIngredientName] = useState("");
+  const [addIngredientAmount, setIngredientAmount] = useState("");
+
+ 
+  const [user, setUser] = useState("");
 
   const URL = "https://sti-java-grupp5-wjfjet.reky.se/recipes"
 
@@ -48,7 +53,7 @@ function App() {
       ingredients: [
     {
       name: addIngredientName,
-      amount: 1,
+      amount: addIngredientAmount,
       unit: "tsk"
     },
     {
@@ -70,6 +75,8 @@ function App() {
       
     }
     setRecipes([...recipes, response.data])
+    setRecipeName("");
+    setIngredientName("");
 
     /* setRecipes([...recipes, newRecipe]);
 
@@ -93,7 +100,7 @@ function App() {
     }
 
 
-  };
+  }
 
 
   useEffect(() => {
@@ -125,8 +132,8 @@ function App() {
       <h1>Local State</h1>
       
       <div> 
-        <input type='text' value={addRecipeName} onChange={(event) => setRecipeName(event.target.value)} placeholder='Namnet på recepted'></input>
-        <input type='text' value={addIngredientName} onChange={(event) => setIngredientName(event.target.value)} placeholder='Namnet på ingredienten'></input>
+        <input type='text' value={addRecipeName} onChange={(event) => setRecipeName(event.target.value)} placeholder='Namnet på receptet'></input>
+        <input type='text' value={addIngredientName + addIngredientAmount} onChange={(event) => setIngredientName(event.target.value)} placeholder='Ingredient, amount'></input>
 
         <button onClick={addRecipe}>Lägg till recept</button>
       </div>
@@ -141,6 +148,7 @@ function App() {
         }
       </ul>
 
+       
     
 
     </div>
