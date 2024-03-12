@@ -6,6 +6,7 @@ import axios from 'axios'
 import { Recipe, IngredientInterface } from './types'
 import RecipeComponent from './components/RecipeComponent'
 import IngredientComponent from './components/IngredientComponent'
+import Header from './pages/Header'
 
 
 /* interface Recipe {
@@ -22,9 +23,11 @@ function App() {
 
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [addRecipeName, setRecipeName] = useState("");
-  const [addIngredientName, setIngredientName] = useState("");
-  const [addIngredientAmount, setIngredientAmount] = useState("");
-
+  
+  const [ingredient, setIngredient] = useState<IngredientInterface[]>([]);
+  const [ingredientName, setIngredientName] = useState("");
+  const [ingredientAmount, setIngredientAmount] = useState(Number);
+  const [ingredientUnit, setIngredientUnit] = useState("");
  
   const [user, setUser] = useState("");
 
@@ -37,8 +40,24 @@ function App() {
       setRecipes(response.data)
     }
 
-  }
-  
+  };
+
+
+
+  const addIngredient = () => {
+
+    const newIngredient = {
+
+      name: ingredientName,
+      amount: ingredientAmount,
+      unit: ingredientUnit
+    };
+
+    setIngredient([...ingredient, newIngredient]);
+    setIngredientName("");
+    setIngredientAmount(0);
+
+  };
 
 
   // POST 
@@ -46,27 +65,14 @@ function App() {
     const originalRecipe = [...recipes]
     const newRecipe = { title: "testTitle", description: "tasty"}
 
+
+    
+
     const response = await axios.post(`${URL}`, {
       title: addRecipeName,
       description: "testDescription",
       imageUrl: "https://assets.icanet.se/e_sharpen:80,q_auto,dpr_1.25,w_718,h_718,c_lfill/imagevaultfiles/id_223427/cf_259/korvstroganoff_med_ris.jpg",
-      ingredients: [
-    {
-      name: addIngredientName,
-      amount: addIngredientAmount,
-      unit: "tsk"
-    },
-    {
-      name: "Peppar",
-      amount: 1,
-      unit: "tsk"
-    },
-    {
-      name: "Smör",
-      amount: 100,
-      unit: "gram"
-    }
-  ]
+      ingredients: ingredient
       
 
     })
@@ -77,6 +83,8 @@ function App() {
     setRecipes([...recipes, response.data])
     setRecipeName("");
     setIngredientName("");
+    setIngredientAmount(0);
+    setIngredient([]);
 
     /* setRecipes([...recipes, newRecipe]);
 
@@ -86,7 +94,7 @@ function App() {
       console.log(error);
       setRecipes(originalRecipe);
     }) */
-  }
+  };
 
   // Delete
 
@@ -100,13 +108,25 @@ function App() {
     }
 
 
+  };
+
+  const deleteAll = async ()=> {
+
+    const response = await axios.get("https://sti-java-grupp5-wjfjet.reky.se/clear")
+
+    if (response.status === 200 ) {
+
+      alert("all clear")
+      setRecipes([])
+    }
+
   }
 
 
   useEffect(() => {
     /* axios.get<Recipe[]>(`${URL}`)
       .then(response => setRecipes(response.data)); */
-      fetchRecipe();
+      //fetchRecipe();
   }, []);
 
   //fetchRecipe();
@@ -129,13 +149,21 @@ function App() {
 
   return (
     <div className='local'>
+      <Header/>
       <h1>Local State</h1>
       
       <div> 
         <input type='text' value={addRecipeName} onChange={(event) => setRecipeName(event.target.value)} placeholder='Namnet på receptet'></input>
-        <input type='text' value={addIngredientName + addIngredientAmount} onChange={(event) => setIngredientName(event.target.value)} placeholder='Ingredient, amount'></input>
+        <br /><br />
+        <input type='text' value={ingredientName} onChange={(event) => setIngredientName(event.target.value)} placeholder='Ingredient'></input>
+        <input type="number" value={ingredientAmount} onChange={(event) => setIngredientAmount(event.target.valueAsNumber)} placeholder='Amount'/>
+        <input type="text" value={ingredientUnit} onChange={(event) => setIngredientUnit(event.target.value)} placeholder='Unit' />
 
+
+        <button onClick={addIngredient}>Lägg till ingredient</button>
+        <br /><br />
         <button onClick={addRecipe}>Lägg till recept</button>
+        <button onClick={deleteAll}>Radera all recept</button>
       </div>
 
       <br></br>
