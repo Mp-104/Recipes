@@ -1,12 +1,12 @@
 import React from 'react'
 import axios from "axios";
-import { Recipe, IngredientInterface } from "../types";
+import { RecipeInterface, IngredientInterface } from "../types";
 import IngredientComponent from "./IngredientComponent";
 import DeleteRecipeComponent from "./DeleteRecipeComponent";
 
 
 interface RecipeComponentProps {
-    recipe: Recipe,
+    recipe: RecipeInterface,
     
     showHideFunction: () => void
 };

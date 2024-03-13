@@ -7,7 +7,7 @@ export interface Recipe0 {
   
   }
 
-  export interface Recipe {
+  export interface RecipeInterface {
     _id: string
     title: string
     description: string

@@ -1,10 +1,10 @@
-import { Recipe } from "../types"
+import { RecipeInterface } from "../types"
 import axios from "axios"
 import RecipeComponent from "./RecipeComponent"
 import App from "../App"
 
 interface DeleteRecipeComponentProps {
-    recipe: Recipe,
+    recipe: RecipeInterface,
     
     handleDelete: (recipeId: string) => Promise<void>
     

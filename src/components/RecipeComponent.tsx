@@ -1,11 +1,11 @@
 import axios from "axios";
-import { Recipe, IngredientInterface } from "../types";
+import { RecipeInterface, IngredientInterface } from "../types";
 import IngredientComponent from "./IngredientComponent";
 import DeleteRecipeComponent from "./DeleteRecipeComponent";
 import ImageComponent from "./ImageComponent";
 
 interface RecipeComponentProps {
-    recipe: Recipe,
+    recipe: RecipeInterface,
     
     handleDelete: (recipeId: string) => Promise<void>
     showHideFunction: () => void
@@ -21,16 +21,19 @@ const RecipeComponent = ({recipe, handleDelete, showHideFunction}: RecipeCompone
         <div>
             <p>Recept id: {recipe._id}</p>
             <p>Recept namn (title): {recipe.title}</p>
-            <p>Bild url: {recipe.imageUrl}</p>
+            <p>Description: {recipe.description}</p>
+            <p>TimeInMinutes: {recipe.timeInMins}</p>
+            <p>Rating: {recipe.ratings}</p>
+            {/* <p>Bild url: {recipe.imageUrl}</p> */}
             <p>Categories: {recipe.categories}</p>
         </div>
 
-        <div className="ingredients-div">
+        {/* <div className="ingredients-div">
             <p>Ingredients: {recipe.ingredients[0].name}</p>
             <p>amount: {recipe.ingredients[0].amount}</p>
             <p>unit: {recipe.ingredients[0].unit}</p>
 
-        </div>
+        </div> */}
 
         <div>
         <ul>Ingredienter: {recipe.ingredients.map( ({id, unit, name, amount}: any ) => {
