@@ -7,6 +7,8 @@ import { RecipeInterface, IngredientInterface } from './types'
 import RecipeComponent from './components/RecipeComponent'
 import IngredientComponent from './components/IngredientComponent'
 import Header from './pages/Header'
+import AddDynamicInputFields from './components/AddInput'
+import Form from './components/Form'
 
 
 /* interface Recipe {
@@ -28,10 +30,14 @@ function App() {
   const [imageURL, setImageURL] = useState("");
   const [rating, setRating] = useState("");
   
-  const [ingredient, setIngredient] = useState<IngredientInterface[]>([]);
+  /* const [ingredient, setIngredient] = useState<IngredientInterface[]>([{ name: "", amount: 0, unit:"" }]); */
   const [ingredientName, setIngredientName] = useState("");
   const [ingredientAmount, setIngredientAmount] = useState(Number);
   const [ingredientUnit, setIngredientUnit] = useState("");
+
+  const [instructions, setInstructions] = useState("");
+  const [categories, setCategories] = useState("");
+ 
  
   const [user, setUser] = useState("");
 
@@ -44,6 +50,17 @@ function App() {
       setRecipes(response.data)
     }
 
+  };
+
+  // Funktion till att addera ingridiener till vårt objekt 'ingridients'
+  const addIngredient1 = () => {
+
+    setRecipes((prevData) => ({
+      ...prevData, ingredients: [
+        ...prevData.ingredients,
+        { name: "", amount: 0, unit: "" },
+      ],
+    }));
   };
 
 
@@ -70,6 +87,9 @@ function App() {
     const originalRecipe = [...recipes]
     const newRecipe = { title: "testTitle", description: "tasty"}
 
+    const categoryArray = categories.split(',').map((category) => category.trim());
+    const instructionsArray = instructions.split(",").map((instructions) => instructions.trim());
+
 
     const response = await axios.post(`${URL}`, {
       title: recipeName,
@@ -77,23 +97,31 @@ function App() {
       ratings: [rating],
       imageUrl: imageURL,
       timeInMins: timeInMins,
+      categories: categoryArray,
+      instructions: instructionsArray,
       ingredients: ingredient
       
 
     })
 
-    if (response.status === 201) {
-      
+    if (response.status === 200) {
+      setRecipes([...recipes, response.data]);
+      alert("Recept tillagt!")
+
+      setRecipeName("");
+      setIngredientName("");
+      setIngredientAmount(0);
+      setIngredient([]);
+      setDescription("");
+      setTimeInMinutes(0);
+      setImageURL("");
+      setRating("");
+      setCategories("");
+      setInstructions("");
+    } else {
+      alert("Error")
     }
-    setRecipes([...recipes, response.data])
-    setRecipeName("");
-    setIngredientName("");
-    setIngredientAmount(0);
-    setIngredient([]);
-    setDescription("");
-    setTimeInMinutes(0);
-    setImageURL("");
-    setRating("");
+    
 
     /* setRecipes([...recipes, newRecipe]);
 
@@ -135,7 +163,7 @@ function App() {
   useEffect(() => {
     /* axios.get<Recipe[]>(`${URL}`)
       .then(response => setRecipes(response.data)); */
-      //fetchRecipe();
+      //fetchRecipes();
   }, []);
 
   //fetchRecipe();
@@ -155,9 +183,110 @@ function App() {
 
   };
 
+  function handleSubmit(formData: FormData) {
+    console.log(formData);
+  };
+
+
+
+
+
+
+  const [counter, setCounter] =useState(0);
+  const [inputValues, setInputValues] = useState<any>({});
+
+
+  const handleClick = () => {
+
+    setCounter(counter +1);
+    console.log(counter);
+
+  };
+
+  const handleOnChange = (event:any) => {
+    const abc:any = {};
+    abc[event.target.className] = event.target.value;
+    setInputValues({...inputValues, ...abc})
+
+  };
+
+  const handleOnChange2 = (event:any) => {
+
+    setIngredientName(event.target.value)
+
+    /* const abc:any = {};
+    abc[event.target.className] = event.target.value;
+    setInputValues({...inputValues, ...abc}) */
+
+  };
+
+  const [ingredient, setIngredient] = useState<IngredientInterface[]>([{ name: "", amount: 0, unit:"" }]);
+
+  console.log(ingredient);
+
+  const handleIngredientAdd = () => {
+
+    setIngredient([...ingredient, { name: "", amount: 0, unit: ""}])
+
+  }
+
+  const handleIngredientRemove = (index:number) => {
+    const list = [...ingredient];
+    list.splice(index, 1);
+    setIngredient(list);
+  }
+
+  const handleIngredientChange = (e:any, index:any) => {
+    const {name, value} = e.target
+    const list = [...ingredient];
+    list[index][name] = value;
+    setIngredient(list);
+  }
+  
 
   return (
+    
+
     <div className='local'>
+
+      {ingredient.map((singleIngredient, index) => (
+        <div key={index}>
+          <input value={singleIngredient.name} onChange={(e) => handleIngredientChange(e, index)} name='name' type="text" placeholder='Ingredient'/> 
+          <input value={singleIngredient.amount} onChange={(e) => handleIngredientChange(e, index)} name='amount' type="number" placeholder='Unit'/> 
+
+          <input value={singleIngredient.unit} onChange={(e) => handleIngredientChange(e, index)} name='unit' type="text" placeholder='Unit'/> 
+          {ingredient.length > 1 && (<button type='button' onClick={() => handleIngredientRemove(index)}>Remove</button>)}
+          
+          <br />
+          {ingredient.length - 1 === index && (<div> <br /><button type='button' onClick={handleIngredientAdd} >Add Ingredient?</button></div>) }
+          
+        </div>
+      ))}
+
+
+      {Object.keys(inputValues).map((c) => {
+        return <p>{inputValues[c]}</p>;
+      })}
+      
+      {Array.from(Array(counter)).map((c, index) => {
+        return <form>
+                <input onChange={handleOnChange} key={c} className={index} type="text" placeholder='lägg till ingredient'/> 
+                <input onChange={handleOnChange} key={c} className={index} type="text" placeholder='lägg till unit'/> 
+                <input onChange={handleOnChange} key={c} className={index} type="text" placeholder='lägg till amount'/> 
+                  {/* <input type='text' value={ingredientName} onChange={(event) => setIngredientName(event.target.value)} placeholder='Ingredient'></input>
+                  <input type="number" value={ingredientAmount} onChange={(event) => setIngredientAmount(event.target.valueAsNumber)} placeholder='Amount'/>
+                  <input type="text" value={ingredientUnit} onChange={(event) => setIngredientUnit(event.target.value)} placeholder='Unit' /> */}
+
+              </form>
+      })}
+      <br />
+      <button onClick={handleClick}>Add input field</button>
+
+
+
+
+
+      {/* <Form onSubmit={handleSubmit}></Form> */}
       <Header/>
       <h1>Local State</h1>
       
@@ -171,11 +300,35 @@ function App() {
         
         <input type='number' onChange={(event) => setRating(event.target.value)} min={1} max={5} placeholder='Rating'/>
 
+        <br /><br />
+        
+        <textarea rows={4} cols={30} onChange={(event) => setInstructions(event.target.value)} placeholder='Instruktioner' ></textarea>
+        <br />
+
+        <input type="text" onChange={(event) => setCategories(event.target.value)} placeholder='Kategorier'/>
+
 
         <br /><br />
         <input type='text' value={ingredientName} onChange={(event) => setIngredientName(event.target.value)} placeholder='Ingredient'></input>
         <input type="number" value={ingredientAmount} onChange={(event) => setIngredientAmount(event.target.valueAsNumber)} placeholder='Amount'/>
         <input type="text" value={ingredientUnit} onChange={(event) => setIngredientUnit(event.target.value)} placeholder='Unit' />
+
+
+
+        {Array.from(Array(counter)).map((c, index) => {
+        return <span key={c} className={index}>
+                {/* <input onChange={handleOnChange} key={c} className={index} type="text" placeholder='lägg till ingredient'/> 
+                <input onChange={handleOnChange} key={c} className={index} type="text" placeholder='lägg till unit'/> 
+                <input onChange={handleOnChange} key={c} className={index} type="text" placeholder='lägg till amount'/>  */}
+                  <input key={c} className={index} type='text' value={ingredientName} onChange={handleOnChange2} placeholder='Ingredient'></input>
+                  
+
+              </span>
+      })}
+      <br />
+      <button onClick={handleClick}>Add ingredient input field</button>
+
+
 
 
         <button onClick={addIngredient}>Lägg till ingredient</button>
